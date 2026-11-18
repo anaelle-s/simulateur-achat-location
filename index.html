@@ -109,7 +109,8 @@ td:first-child, th:first-child { text-align: left; }
         <div class="field"><label for="frais_notaire">Frais de notaire</label><div class="num"><input id="frais_notaire" type="number" step="0.1"><span>%</span></div></div>
         <div class="field"><label for="materiaux">Matériaux et artisans</label><div class="num"><input id="materiaux" type="number" step="1000"><span>€</span></div></div>
         <div class="field"><label for="valeur_apres">Valeur une fois rénové<small>Aux prix d'aujourd'hui</small></label><div class="num"><input id="valeur_apres" type="number" step="5000"><span>€</span></div></div>
-        <div class="field"><label for="mois_travaux">Durée des travaux<small>Loyer et crédit payés en même temps</small></label><div class="num"><input id="mois_travaux" type="number" step="1"><span>mois</span></div></div>
+        <div class="field"><label for="mois_travaux">Durée des travaux<small>Pas d'Airbnb pendant ce temps</small></label><div class="num"><input id="mois_travaux" type="number" step="1"><span>mois</span></div></div>
+        <div class="field"><label for="mois_double_loyer">Préavis de ton bail<small>Mois où tu paies loyer et crédit</small></label><div class="num"><input id="mois_double_loyer" type="number" step="1"><span>mois</span></div></div>
       </fieldset>
 
       <fieldset><legend>Financement</legend>
@@ -181,7 +182,7 @@ td:first-child, th:first-child { text-align: left; }
 <script>
 const DEFAULT = {
   prix: 235000, frais_notaire: 8, materiaux: 20000, apport_total: 110000, pret_familial: 50000,
-  valeur_apres: 275000, mois_travaux: 6, taux: 3.75, assur: 0.25, duree: 25,
+  valeur_apres: 275000, mois_travaux: 6, mois_double_loyer: 1, taux: 3.75, assur: 0.25, duree: 25,
   loyer: 910, index_loyer: 2, tf: 600, copro: 135, travaux_copro: 4000, entretien: 0.5,
   valo: 1, placement: 3.5, frais_revente: 4,
   nuits_mois: 6, prix_nuit: 110, couts_airbnb: 20, plafond_nuits: 90, tmi: 30
@@ -228,7 +229,7 @@ function simulate(q, years) {
     const travaux = m <= p.mois_travaux;
     const charges = p.tf / 12 + p.copro + p.entretien * valeur / 12;
     const airbnb = travaux ? 0 : airbnbM;
-    let coutAchat = credit + charges - airbnb + (travaux ? loyer : 0);
+    let coutAchat = credit + charges - airbnb + (m <= p.mois_double_loyer ? loyer : 0);
     if (m === FIXED.mois_copro) coutAchat += p.travaux_copro;
     potAchat *= 1 + placM;
     potLoc *= 1 + placM;
