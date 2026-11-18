@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Acheter ou louer : 2 pièces Paris 20e</title>
+<title>Acheter ou louer à Paris</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=Source+Sans+3:wght@400;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
@@ -85,15 +85,41 @@ td:first-child, th:first-child { text-align: left; }
 .note { font-size: 13px; color: var(--muted); max-width: 75ch; margin: 0; }
 .legend { display: flex; gap: 14px; font-size: 12px; color: var(--muted); margin-bottom: 6px; }
 .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 5px; vertical-align: -1px; }
+.tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+.tabs a { padding: 8px 14px; text-decoration: none; color: var(--muted); font-family: var(--font-display); font-weight: 700; font-size: 14px; border-bottom: 3px solid transparent; margin-bottom: -1px; }
+.tabs a:hover { color: var(--ink); }
+.tabs a[aria-current="page"] { color: var(--ink); border-color: var(--accent); }
+.tabs a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.tab { display: grid; gap: 16px; }
+[hidden] { display: none !important; }
+.tab-title { font-family: var(--font-display); font-size: 22px; font-weight: 800; margin: 0 0 4px; text-wrap: balance; }
+.intro p { margin: 0; color: var(--muted); max-width: 75ch; }
+.intro p + p { margin-top: 6px; }
+.alert { border: 1px solid color-mix(in srgb, var(--rent) 55%, var(--line)); background: color-mix(in srgb, var(--rent) 10%, var(--surface)); border-radius: 10px; padding: 12px 14px; font-size: 14px; }
+.alert.danger { border-color: var(--bad); background: color-mix(in srgb, var(--bad) 12%, var(--surface)); }
+.alert strong { font-weight: 600; }
+.num select { width: 100%; border: 0; background: transparent; color: var(--ink); font: inherit; font-size: 13px; padding: 6px 8px; }
+.field.wide { grid-template-columns: 1fr 150px; }
+.seuils td, .seuils th { text-align: right; }
+.seuils td:first-child, .seuils th:first-child { text-align: left; }
 </style>
 </head>
 <body>
 <div class="wrap">
   <header>
-    <h1>Acheter ou louer : 2 pièces à rénover, Paris 20e</h1>
+    <h1>Acheter ou louer à Paris</h1>
+  </header>
+  <nav class="tabs" aria-label="Simulateurs">
+    <a href="#rp" id="nav-rp">Mon 2 pièces</a>
+    <a href="#famille" id="nav-famille">Pied-à-terre familial</a>
+  </nav>
+
+  <section class="tab" id="tab-rp">
+  <div class="intro">
+    <h2 class="tab-title">2 pièces à rénover soi-même, Paris 20e</h2>
     <p>Compare ton patrimoine si tu achètes, rénoves et revends l'année N, avec celui que tu aurais en restant locataire et en plaçant ton apport et l'écart de budget mensuel. Ta main-d'œuvre compte pour 0 €. Le prêt familial à 0 % n'existe que dans le scénario achat.</p>
     <p style="margin-top:6px">Le bien : 33 m² Carrez au 4<sup>e</sup> sans ascenseur, DPE F, affiché 235 000 €. Une fois refait à neuf, l'agent l'estime à 275 000 €.</p>
-  </header>
+  </div>
 
   <div class="grid">
     <form class="panel inputs" id="form" autocomplete="off">
@@ -177,6 +203,113 @@ td:first-child, th:first-child { text-align: left; }
       <p class="note">Hypothèses : impôt Airbnb en micro-BIC (abattement 30 %, prélèvements sociaux 17,2 %), assurance Airbnb 300 €/an, pénalité de remboursement anticipé de 3 % du capital ou 6 mois d'intérêts au plus bas. Le côté propriétaire et le côté locataire ont le même budget mensuel : celui qui dépense le moins place la différence. Ce calcul ne tient pas compte du risque de malfaçon (garantie décennale) ni des économies de chauffage après isolation. Le budget matériaux doit couvrir le traitement des peintures au plomb et la mise à jour de l'électricité. Une pompe à chaleur air/air demande l'accord du syndic, et un vote de l'AG si l'unité extérieure est en façade.</p>
     </section>
   </div>
+  </section>
+  <section class="tab" id="tab-famille" hidden>
+  <div class="intro">
+    <h2 class="tab-title">Pied-à-terre familial en indivision</h2>
+    <p>Les parents et leurs deux filles achètent ensemble un 2 pièces de 30 à 35 m² à rénover. Les parents y passent l'hiver et le logement est loué le reste de l'année. On compare le patrimoine de toute la famille si elle revend l'année N avec l'autre option : louer un 2 pièces meublé chaque hiver et garder les apports placés.</p>
+  </div>
+
+  <div class="alert" id="f_alert"><strong>Airbnb n'est pas possible sans autorisation.</strong> À Paris, une résidence secondaire ne peut être louée en meublé touristique qu'avec une autorisation de changement d'usage avec compensation, et ce dès la première nuit. Le plafond de 90 nuits ne vaut que pour une résidence principale. Le scénario de base loue donc en bail mobilité : un bail meublé de 1 à 10 mois pour étudiants, stagiaires ou salariés en mission ou en mutation, au loyer plafonné par l'encadrement.</div>
+
+  <div class="grid">
+    <form class="panel inputs" id="f_form" autocomplete="off">
+      <div class="presets" role="group" aria-label="Scénarios">
+        <button type="button" data-preset="base" aria-pressed="true">Bail mobilité</button>
+        <button type="button" data-preset="airbnb">Airbnb autorisé</button>
+        <button type="button" data-preset="pessimiste">Pessimiste</button>
+        <button type="button" data-preset="hiverCher">Hiver à 1 800 €</button>
+      </div>
+
+      <fieldset><legend>Le bien</legend>
+        <div class="field"><label for="f_prix">Prix d'achat</label><div class="num"><input id="f_prix" type="number" step="1000"><span>€</span></div></div>
+        <div class="field"><label for="f_frais_notaire">Frais de notaire</label><div class="num"><input id="f_frais_notaire" type="number" step="0.1"><span>%</span></div></div>
+        <div class="field"><label for="f_travaux">Travaux par des artisans</label><div class="num"><input id="f_travaux" type="number" step="1000"><span>€</span></div></div>
+        <div class="field"><label for="f_mobilier">Meubles et équipement<small>Obligatoires pour louer meublé</small></label><div class="num"><input id="f_mobilier" type="number" step="500"><span>€</span></div></div>
+        <div class="field"><label for="f_valeur_apres">Valeur une fois rénové<small>Aux prix d'aujourd'hui</small></label><div class="num"><input id="f_valeur_apres" type="number" step="5000"><span>€</span></div></div>
+        <div class="field"><label for="f_mois_travaux">Durée des travaux<small>Pas de location pendant ce temps</small></label><div class="num"><input id="f_mois_travaux" type="number" step="1"><span>mois</span></div></div>
+      </fieldset>
+
+      <fieldset><legend>Apports et crédit</legend>
+        <div class="field"><label for="f_apport_filles">Apport de chaque fille</label><div class="num"><input id="f_apport_filles" type="number" step="1000"><span>€</span></div></div>
+        <div class="field"><label for="f_apport_parents">Apport des parents<small>Pour les deux</small></label><div class="num"><input id="f_apport_parents" type="number" step="1000"><span>€</span></div></div>
+        <div class="field"><label for="f_part_credit_fille">Part du crédit de chaque fille<small>Les parents portent le reste</small></label><div class="num"><input id="f_part_credit_fille" type="number" step="1"><span>%</span></div></div>
+        <div class="field"><label for="f_taux">Taux du crédit</label><div class="num"><input id="f_taux" type="number" step="0.05"><span>%</span></div></div>
+        <div class="field"><label for="f_assur">Assurance emprunteur<small>Plus chère avec des emprunteurs âgés</small></label><div class="num"><input id="f_assur" type="number" step="0.05"><span>%/an</span></div></div>
+        <div class="field"><label for="f_duree">Durée du crédit<small>Limitée par l'âge des parents</small></label><div class="num"><input id="f_duree" type="number" step="1"><span>ans</span></div></div>
+      </fieldset>
+
+      <fieldset><legend>Charges des propriétaires</legend>
+        <div class="field"><label for="f_copro">Charges de copro</label><div class="num"><input id="f_copro" type="number" step="10"><span>€/mois</span></div></div>
+        <div class="field"><label for="f_tf">Taxe foncière</label><div class="num"><input id="f_tf" type="number" step="50"><span>€/an</span></div></div>
+        <div class="field"><label for="f_th">Taxe d'habitation<small>Résidence secondaire, majorée de 60 % à Paris. Estimation</small></label><div class="num"><input id="f_th" type="number" step="50"><span>€/an</span></div></div>
+        <div class="field"><label for="f_assur_pno">Assurance du logement</label><div class="num"><input id="f_assur_pno" type="number" step="50"><span>€/an</span></div></div>
+        <div class="field"><label for="f_entretien">Entretien</label><div class="num"><input id="f_entretien" type="number" step="0.1"><span>%/an</span></div></div>
+        <div class="field"><label for="f_frais_revente">Frais de revente</label><div class="num"><input id="f_frais_revente" type="number" step="0.5"><span>%</span></div></div>
+      </fieldset>
+
+      <fieldset><legend>Occupation et location</legend>
+        <div class="field"><label for="f_mois_parents">Mois passés par les parents</label><div class="num"><input id="f_mois_parents" type="number" step="1"><span>mois/an</span></div></div>
+        <div class="field wide"><label for="f_mode">Location le reste de l'année</label><div class="num"><select id="f_mode"><option value="mobilite">Bail mobilité</option><option value="airbnb">Airbnb (autorisé)</option></select></div></div>
+        <div class="field" data-mode="mobilite"><label for="f_loyer_mobilite">Loyer hors charges<small>Plafond dans le 20e : environ 34 à 37 €/m²</small></label><div class="num"><input id="f_loyer_mobilite" type="number" step="10"><span>€/mois</span></div></div>
+        <div class="field" data-mode="mobilite"><label for="f_occupation">Taux d'occupation</label><div class="num"><input id="f_occupation" type="number" step="5"><span>%</span></div></div>
+        <div class="field" data-mode="mobilite"><label for="f_gestion">Frais de gestion<small>0 si la famille gère elle-même</small></label><div class="num"><input id="f_gestion" type="number" step="1"><span>%</span></div></div>
+        <div class="field" data-mode="airbnb"><label for="f_prix_nuit">Prix moyen par nuit</label><div class="num"><input id="f_prix_nuit" type="number" step="5"><span>€</span></div></div>
+        <div class="field" data-mode="airbnb"><label for="f_occupation_airbnb">Taux d'occupation</label><div class="num"><input id="f_occupation_airbnb" type="number" step="5"><span>%</span></div></div>
+        <div class="field" data-mode="airbnb"><label for="f_couts_airbnb">Commission, ménage et linge</label><div class="num"><input id="f_couts_airbnb" type="number" step="1"><span>%</span></div></div>
+        <div class="field" data-mode="airbnb"><label for="f_compensation">Coût de la compensation<small>Achat de commercialité, payé à l'achat</small></label><div class="num"><input id="f_compensation" type="number" step="1000"><span>€</span></div></div>
+        <div class="field"><label for="f_tmi">Tranche d'impôt moyenne</label><div class="num"><input id="f_tmi" type="number" step="1"><span>%</span></div></div>
+      </fieldset>
+
+      <fieldset><legend>Sans achat : louer chaque hiver</legend>
+        <div class="field"><label for="f_loyer_hiver">Loyer d'un 2 pièces meublé</label><div class="num"><input id="f_loyer_hiver" type="number" step="50"><span>€/mois</span></div></div>
+        <div class="field"><label for="f_frais_recherche">Frais de recherche<small>Agence, dossier, chaque année</small></label><div class="num"><input id="f_frais_recherche" type="number" step="50"><span>€/an</span></div></div>
+        <div class="field"><label for="f_index_loyer">Hausse des loyers</label><div class="num"><input id="f_index_loyer" type="number" step="0.1"><span>%/an</span></div></div>
+      </fieldset>
+
+      <fieldset><legend>Marché et placement</legend>
+        <div class="field"><label for="f_valo">Évolution des prix</label><div class="num"><input id="f_valo" type="number" step="0.1"><span>%/an</span></div></div>
+        <div class="field"><label for="f_placement">Rendement net du placement<small>Ce que rapporteraient les apports</small></label><div class="num"><input id="f_placement" type="number" step="0.1"><span>%/an</span></div></div>
+      </fieldset>
+    </form>
+
+    <section class="results" aria-live="polite">
+      <div class="tiles">
+        <div class="tile main"><span class="k">Gagnant à la revente à partir de</span><span class="v" id="f_t_pm">–</span><span class="sub" id="f_t_pm_sub"></span></div>
+        <div class="tile"><span class="k">Écart de patrimoine à 10 ans</span><span class="v" id="f_t_e10">–</span></div>
+        <div class="tile"><span class="k">Écart de patrimoine à 15 ans</span><span class="v" id="f_t_e15">–</span></div>
+        <div class="tile"><span class="k">Loyers nets / mensualités des filles</span><span class="v" id="f_t_couv">–</span><span class="sub" id="f_t_couv_sub"></span></div>
+        <div class="tile"><span class="k">Coût mensuel pour la famille</span><span class="v" id="f_t_effort">–</span><span class="sub" id="f_t_effort_sub"></span></div>
+      </div>
+
+      <div class="panel">
+        <h2>Écart de patrimoine de la famille si elle revend l'année N</h2>
+        <div class="legend"><span><i style="background:var(--good)"></i>Achat devant</span><span><i style="background:var(--bad)"></i>Location d'hiver devant</span></div>
+        <div class="chart-box"><svg id="f_chart" viewBox="0 0 760 240" width="100%" role="img" aria-label="Écart de patrimoine achat moins location d'hiver, par année de revente"></svg></div>
+      </div>
+
+      <div class="panel">
+        <h2>Ce qu'il faudrait pour être à l'équilibre</h2>
+        <div class="table-box"><table class="seuils" id="f_seuils"><thead><tr><th>Revente après</th><th>10 ans</th><th>15 ans</th><th>20 ans</th></tr></thead><tbody></tbody></table></div>
+        <p class="note" style="margin-top:8px">Chaque ligne fait varier un seul réglage, les autres restant inchangés.</p>
+      </div>
+
+      <div class="panel">
+        <h2>Répartition de l'indivision</h2>
+        <div class="table-box"><table id="f_indiv"><thead><tr><th>Indivisaire</th><th>Apport</th><th>Part du crédit</th><th>Mensualité</th><th>Quote-part du bien</th></tr></thead><tbody></tbody></table></div>
+        <p class="note" style="margin-top:8px">Quote-part = apport + part du crédit, rapportées au coût total de l'opération. À inscrire dans l'acte d'achat et dans une convention d'indivision.</p>
+      </div>
+
+      <div class="panel">
+        <h2>Année par année</h2>
+        <div class="table-box"><table id="f_table"><thead><tr><th>Revente après</th><th>Patrimoine achat</th><th>Patrimoine location</th><th>Écart</th><th>Impôt sur la plus-value</th><th>Capital restant dû</th></tr></thead><tbody></tbody></table></div>
+      </div>
+
+      <p class="note">Hypothèses : loyers du bail mobilité imposés en micro-BIC (abattement 50 %), Airbnb en meublé de tourisme non classé (abattement 30 % ; au-delà de 15 000 € de recettes, le régime réel s'impose et le calcul devient approximatif), prélèvements sociaux 17,2 %. Plus-value de résidence secondaire selon le régime en vigueur : 19 % d'impôt et 17,2 % de prélèvements sociaux, exonération totale après 22 et 30 ans de détention, frais de notaire réels et travaux réels ou forfait de 15 % après 5 ans. Une réforme est en discussion pour le budget 2027. La surtaxe sur les plus-values de plus de 50 000 € par personne n'est pas comptée. Les deux options ont le même budget mensuel : celle qui coûte le moins place la différence.</p>
+    </section>
+  </div>
+  </section>
+
 </div>
 
 <script>
@@ -276,8 +409,8 @@ function read() {
 }
 function fill(p) { Object.keys(p).forEach(k => document.getElementById(k).value = p[k]); }
 
-function drawChart(rows) {
-  const svg = document.getElementById("chart");
+function drawChart(rows, id) {
+  const svg = document.getElementById(id || "chart");
   const W = 760, H = 240, L = 56, R = 10, T = 12, B = 26;
   const vals = rows.map(r => r.ecart);
   let max = Math.max(0, ...vals), min = Math.min(0, ...vals);
@@ -332,18 +465,201 @@ function render() {
 }
 
 document.getElementById("form").addEventListener("input", () => {
-  document.querySelectorAll(".presets button").forEach(b => b.setAttribute("aria-pressed", "false"));
+  document.querySelectorAll("#tab-rp .presets button").forEach(b => b.setAttribute("aria-pressed", "false"));
   render();
 });
 document.getElementById("form").addEventListener("submit", e => e.preventDefault());
-document.querySelectorAll(".presets button").forEach(b => b.addEventListener("click", () => {
+document.querySelectorAll("#tab-rp .presets button").forEach(b => b.addEventListener("click", () => {
   const keep = { prix: read().prix };
   fill(Object.assign({}, DEFAULT, PRESETS[b.dataset.preset], keep));
-  document.querySelectorAll(".presets button").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
+  document.querySelectorAll("#tab-rp .presets button").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
   render();
 }));
 fill(DEFAULT);
 render();
+/* ---------- Onglet 2 : pied-à-terre familial ---------- */
+const F_DEFAULT = {
+  prix: 245000, frais_notaire: 8, travaux: 35000, mobilier: 6000, valeur_apres: 285000, mois_travaux: 4,
+  apport_filles: 20000, apport_parents: 50000, part_credit_fille: 25, taux: 3.7, assur: 0.45, duree: 20,
+  copro: 135, tf: 600, th: 1000, assur_pno: 250, entretien: 0.5, frais_revente: 4,
+  mois_parents: 5, mode: "mobilite", loyer_mobilite: 1150, occupation: 85, gestion: 0,
+  prix_nuit: 120, occupation_airbnb: 70, couts_airbnb: 25, compensation: 0, tmi: 30,
+  loyer_hiver: 1200, frais_recherche: 500, index_loyer: 2, valo: 1, placement: 3.5
+};
+const F_PRESETS = {
+  base: {},
+  airbnb: { mode: "airbnb" },
+  pessimiste: { valo: 0, placement: 5 },
+  hiverCher: { loyer_hiver: 1800 }
+};
+const F_PCT = ["frais_notaire","part_credit_fille","taux","assur","entretien","frais_revente","occupation","gestion",
+  "occupation_airbnb","couts_airbnb","tmi","index_loyer","valo","placement"];
+const F_PS = 0.172;
+
+function fImpotPV(venteNette, p, annees) {
+  const fraisAcq = Math.max(p.frais_notaire, 0.075) * p.prix;
+  let travaux = p.travaux;
+  if (annees > 5) travaux = Math.max(travaux, 0.15 * p.prix);
+  const pv = venteNette - (p.prix + fraisAcq + travaux);
+  if (pv <= 0) return 0;
+  const n = Math.floor(annees);
+  let abIR = 0.06 * Math.max(0, Math.min(n, 21) - 5) + (n >= 22 ? 0.04 : 0);
+  let abPS = 0.0165 * Math.max(0, Math.min(n, 21) - 5) + (n >= 22 ? 0.016 : 0) + 0.09 * Math.max(0, Math.min(n, 30) - 22);
+  abIR = Math.min(abIR, 1); abPS = Math.min(abPS, 1);
+  return pv * (1 - abIR) * 0.19 + pv * (1 - abPS) * 0.172;
+}
+
+function fRevenus(p) {
+  const moisLibres = 12 - p.mois_parents;
+  if (p.mode === "airbnb") {
+    const nuits = moisLibres * 30.4 * p.occupation_airbnb;
+    const brut = nuits * p.prix_nuit;
+    const impot = brut * (1 - 0.30) * (p.tmi + F_PS);
+    return { net: brut * (1 - p.couts_airbnb) - impot, brut };
+  }
+  const brut = moisLibres * p.occupation * p.loyer_mobilite;
+  const impot = brut * (1 - 0.50) * (p.tmi + F_PS);
+  return { net: brut * (1 - p.gestion) - impot, brut };
+}
+
+function fSimulate(q, years) {
+  const p = Object.assign({}, q);
+  F_PCT.forEach(k => p[k] = q[k] / 100);
+  const apports = 2 * p.apport_filles + p.apport_parents;
+  let coutTotal = p.prix * (1 + p.frais_notaire) + p.travaux + p.mobilier;
+  if (p.mode === "airbnb") coutTotal += p.compensation;
+  const emprunt = Math.max(0, coutTotal - apports);
+  const rm = p.taux / 12, n = p.duree * 12;
+  const mens = emprunt > 0 ? (rm > 0 ? emprunt * rm / (1 - Math.pow(1 + rm, -n)) : emprunt / n) : 0;
+  const assurM = emprunt * p.assur / 12;
+  const placM = Math.pow(1 + p.placement, 1 / 12) - 1;
+  const rev = fRevenus(p);
+  let crd = emprunt, potAchat = 0, potLoc = apports;
+  const rows = [];
+  for (let m = 1; m <= years * 12; m++) {
+    const an = Math.floor((m - 1) / 12);
+    const valeur = p.valeur_apres * Math.pow(1 + p.valo, m / 12);
+    let credit = 0;
+    if (crd > 0) { crd = Math.max(0, crd - (mens - crd * rm)); credit = mens + assurM; }
+    const charges = p.copro + (p.tf + p.th + p.assur_pno) / 12 + p.entretien * valeur / 12;
+    const revenus = m <= p.mois_travaux ? 0 : rev.net / 12;
+    const coutAchat = credit + charges - revenus;
+    const coutLoc = (p.loyer_hiver * p.mois_parents + p.frais_recherche) / 12 * Math.pow(1 + p.index_loyer, an);
+    potAchat *= 1 + placM; potLoc *= 1 + placM;
+    const diff = coutAchat - coutLoc;
+    if (diff > 0) potLoc += diff; else potAchat -= diff;
+    if (m % 12 === 0) {
+      const N = m / 12;
+      const venteNette = valeur * (1 - p.frais_revente);
+      const ira = crd > 0 ? Math.min(0.03 * crd, 6 * crd * rm) : 0;
+      const pv = fImpotPV(venteNette, p, N);
+      const achat = venteNette - crd - ira - pv + potAchat;
+      rows.push({ an: N, achat, loc: potLoc, ecart: achat - potLoc, coutAchat, coutLoc, crd, pv });
+    }
+  }
+  return { rows, emprunt, mens: mens + assurM, netM: rev.net / 12, brut: rev.brut,
+           mensFilles: 2 * p.part_credit_fille * (mens + assurM), apports, coutTotal, partFille: p.part_credit_fille };
+}
+
+function fSeuil(p, key, h, lo, hi, croissant) {
+  // croissant : l'écart augmente quand la valeur augmente
+  const at = v => fSimulate(Object.assign({}, p, { [key]: v }), h).rows[h - 1].ecart;
+  if (croissant ? at(hi) < 0 : at(lo) < 0) return null;
+  if (croissant ? at(lo) >= 0 : at(hi) >= 0) return croissant ? lo : hi;
+  for (let i = 0; i < 40; i++) {
+    const mid = (lo + hi) / 2;
+    const ok = at(mid) >= 0;
+    if (croissant) { if (ok) hi = mid; else lo = mid; } else { if (ok) lo = mid; else hi = mid; }
+  }
+  return croissant ? hi : lo;
+}
+
+function fRead() {
+  const p = {};
+  Object.keys(F_DEFAULT).forEach(k => {
+    const el = document.getElementById("f_" + k);
+    if (k === "mode") { p[k] = el.value; return; }
+    const v = parseFloat(el.value);
+    p[k] = isNaN(v) ? F_DEFAULT[k] : v;
+  });
+  return p;
+}
+function fFill(p) { Object.keys(p).forEach(k => document.getElementById("f_" + k).value = p[k]); }
+
+function fRender() {
+  const p = fRead();
+  document.querySelectorAll("#f_form [data-mode]").forEach(el => el.hidden = el.dataset.mode !== p.mode);
+  document.getElementById("f_alert").classList.toggle("danger", p.mode === "airbnb");
+  const res = fSimulate(p, 25);
+  const rows = res.rows;
+  const pm = pointMort(rows);
+  const pmEl = document.getElementById("f_t_pm");
+  pmEl.textContent = pm === null ? "pas avant 25 ans" : (pm <= 1 ? "1 an" : pm + " ans");
+  pmEl.className = "v " + (pm === null ? "neg" : "pos");
+  document.getElementById("f_t_pm_sub").textContent = pm === null ? "Louer l'hiver reste moins cher" : "Et l'achat reste devant ensuite";
+  const set = (id, v) => { const el = document.getElementById(id); el.textContent = fmtK(v); el.className = "v " + (v >= 0 ? "pos" : "neg"); };
+  set("f_t_e10", rows[9].ecart); set("f_t_e15", rows[14].ecart);
+  const couv = res.mensFilles > 0 ? res.netM / res.mensFilles : 0;
+  const cEl = document.getElementById("f_t_couv");
+  cEl.textContent = Math.round(couv * 100) + " %";
+  cEl.className = "v " + (couv >= 1 ? "pos" : "neg");
+  document.getElementById("f_t_couv_sub").textContent = fmt(res.netM) + " nets par mois pour " + fmt(res.mensFilles) + " de mensualités";
+  document.getElementById("f_t_effort").textContent = fmt(rows[1].coutAchat) + "/mois";
+  document.getElementById("f_t_effort_sub").textContent = "Contre " + fmt(rows[1].coutLoc) + "/mois en louant l'hiver";
+  drawChart(rows, "f_chart");
+
+  const hs = [10, 15, 20];
+  const lignes = [
+    ["Loyer d'hiver de l'alternative", hs.map(h => fSeuil(p, "loyer_hiver", h, 0, 8000, true)), v => fmt(v) + "/mois"],
+    ["Prix d'achat maximum", hs.map(h => fSeuil(p, "prix", h, 50000, 600000, false)), v => Math.floor(v / 1000).toLocaleString("fr-FR") + " k€"],
+    ["Valeur une fois rénové", hs.map(h => fSeuil(p, "valeur_apres", h, 50000, 1000000, true)), v => Math.ceil(v / 1000).toLocaleString("fr-FR") + " k€"]
+  ];
+  document.querySelector("#f_seuils tbody").innerHTML = lignes.map(([lab, vals, f]) =>
+    `<tr><td>${lab}</td>${vals.map(v => `<td>${v === null ? "hors d'atteinte" : f(v)}</td>`).join("")}</tr>`).join("");
+
+  const partParents = Math.max(0, 1 - 2 * res.partFille);
+  const ind = [
+    ["Fille 1", p.apport_filles, res.partFille],
+    ["Fille 2", p.apport_filles, res.partFille],
+    ["Parents", p.apport_parents, partParents]
+  ];
+  document.querySelector("#f_indiv tbody").innerHTML = ind.map(([nom, ap, part]) => {
+    const quote = (ap + part * res.emprunt) / res.coutTotal;
+    return `<tr><td>${nom}</td><td>${fmt(ap)}</td><td>${Math.round(part * 100)} % (${fmt(part * res.emprunt)})</td><td>${fmt(part * res.mens)}/mois</td><td>${(quote * 100).toLocaleString("fr-FR", { maximumFractionDigits: 1 })} %</td></tr>`;
+  }).join("");
+
+  document.querySelector("#f_table tbody").innerHTML = rows.map(r =>
+    `<tr><td>${r.an} an${r.an > 1 ? "s" : ""}</td><td>${fmt(r.achat)}</td><td>${fmt(r.loc)}</td><td class="${r.ecart >= 0 ? "pos" : "neg"}">${fmtK(r.ecart)}</td><td>${fmt(r.pv)}</td><td>${fmt(r.crd)}</td></tr>`
+  ).join("");
+}
+
+document.getElementById("f_form").addEventListener("input", () => {
+  document.querySelectorAll("#tab-famille .presets button").forEach(b => b.setAttribute("aria-pressed", "false"));
+  fRender();
+});
+document.getElementById("f_form").addEventListener("change", fRender);
+document.getElementById("f_form").addEventListener("submit", e => e.preventDefault());
+document.querySelectorAll("#tab-famille .presets button").forEach(b => b.addEventListener("click", () => {
+  const keep = { prix: fRead().prix };
+  fFill(Object.assign({}, F_DEFAULT, F_PRESETS[b.dataset.preset], keep));
+  document.querySelectorAll("#tab-famille .presets button").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
+  fRender();
+}));
+fFill(F_DEFAULT);
+fRender();
+
+/* ---------- Onglets ---------- */
+function showTab() {
+  const t = location.hash === "#famille" ? "famille" : "rp";
+  ["rp", "famille"].forEach(id => {
+    document.getElementById("tab-" + id).hidden = id !== t;
+    const a = document.getElementById("nav-" + id);
+    if (id === t) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current");
+  });
+}
+window.addEventListener("hashchange", showTab);
+showTab();
+
 </script>
 </body>
 </html>

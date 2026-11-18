@@ -1,5 +1,8 @@
-# Simulateur acheter ou louer
+# Simulateurs acheter ou louer à Paris
 
-Compare le patrimoine en cas d'achat, de rénovation soi-même et de revente l'année N, avec celui d'un locataire qui place son apport et l'écart de budget mensuel. Le simulateur prend en compte la valeur après travaux, des nuits Airbnb et un prêt familial à 0 %.
+Deux onglets :
+
+- **Mon 2 pièces** : achat d'une résidence principale à rénover soi-même, avec quelques nuits Airbnb et un prêt familial à 0 %, comparé au fait de rester locataire.
+- **Pied-à-terre familial** : achat en indivision par deux filles et leurs parents. Les parents l'occupent l'hiver, il est loué en bail mobilité le reste de l'année. Comparé à la location d'un meublé chaque hiver.
 
 Page en ligne : https://anaelle-s.github.io/simulateur-achat-location/
