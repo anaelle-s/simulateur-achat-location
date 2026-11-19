@@ -117,7 +117,7 @@ td:first-child, th:first-child { text-align: left; }
   <section class="tab" id="tab-rp">
   <div class="intro">
     <h2 class="tab-title">2 pièces à rénover soi-même, Paris 20e</h2>
-    <p>Compare ton patrimoine si tu achètes, rénoves et revends l'année N, avec celui que tu aurais en restant locataire et en plaçant ton apport et l'écart de budget mensuel. Ta main-d'œuvre compte pour 0 €. Le prêt familial à 0 % n'existe que dans le scénario achat.</p>
+    <p>Compare ton patrimoine si tu achètes, rénoves et revends l'année N, avec celui que tu aurais en restant locataire et en plaçant ton apport et l'écart de budget mensuel. Ta main-d'œuvre compte pour 0 €. Le prêt familial à 0 % n'existe que dans le scénario achat, et seulement pour la part que ton épargne ne couvre pas.</p>
     <p style="margin-top:6px">Le bien : 33 m² Carrez au 4<sup>e</sup> sans ascenseur, DPE F, affiché 235 000 €. Une fois refait à neuf, l'agent l'estime à 275 000 €.</p>
   </div>
 
@@ -143,7 +143,7 @@ td:first-child, th:first-child { text-align: left; }
         <div class="field"><label for="emprunt">Emprunt bancaire<small>Simulation du courtier du 19/11/26</small></label><div class="num"><input id="emprunt" type="number" step="1000"><span>€</span></div></div>
         <div class="field"><label for="frais_bancaires">Garantie, dossier et courtage<small>2 722 + 1 000 + 3 500 €</small></label><div class="num"><input id="frais_bancaires" type="number" step="100"><span>€</span></div></div>
         <div class="field"><label for="epargne">Ton épargne<small>Hors prêt familial</small></label><div class="num"><input id="epargne" type="number" step="1000"><span>€</span></div></div>
-        <div class="field"><label for="pret_familial">Prêt familial à 0 %<small>Remboursé à la revente</small></label><div class="num"><input id="pret_familial" type="number" step="1000"><span>€</span></div></div>
+        <div class="field"><label for="pret_familial">Prêt familial à 0 % (maximum)<small>Utilisé seulement si ton épargne ne suffit pas. Remboursé à la revente</small></label><div class="num"><input id="pret_familial" type="number" step="1000"><span>€</span></div></div>
         <div class="field"><label for="taux">Taux du crédit<small>Déduit de la mensualité du courtier : 1 167 € assurance comprise</small></label><div class="num"><input id="taux" type="number" step="0.05"><span>%</span></div></div>
         <div class="field"><label for="assur">Assurance emprunteur</label><div class="num"><input id="assur" type="number" step="0.05"><span>%/an</span></div></div>
         <div class="field"><label for="duree">Durée du crédit</label><div class="num"><input id="duree" type="number" step="1"><span>ans</span></div></div>
@@ -344,10 +344,10 @@ function simulate(q, years) {
   pct.forEach(k => p[k] = q[k] / 100);
   const rm = p.taux / 12, n = p.duree * 12;
   const coutInitial = p.prix * (1 + p.frais_notaire) + p.frais_bancaires + p.materiaux;
-  const cash = p.epargne + p.pret_familial;
-  const besoin = coutInitial - p.emprunt;
-  const manque = Math.max(0, besoin - cash);   // complément emprunté si l'épargne ne suffit pas
-  const reste = Math.max(0, cash - besoin);    // épargne qui reste placée après l'achat
+  const besoin = coutInitial - p.emprunt;                                   // à payer de ta poche
+  const familial = Math.min(p.pret_familial, Math.max(0, besoin - p.epargne)); // prêt familial réellement utilisé
+  const manque = Math.max(0, besoin - p.epargne - familial);                // complément emprunté à la banque
+  const reste = Math.max(0, p.epargne - besoin);                            // épargne qui reste placée
   const emprunt = Math.max(0, p.emprunt + manque);
   const mens = emprunt > 0 ? (rm > 0 ? emprunt * rm / (1 - Math.pow(1 + rm, -n)) : emprunt / n) : 0;
   const assurM = emprunt * p.assur / 12;
@@ -383,11 +383,11 @@ function simulate(q, years) {
     if (m % 12 === 0) {
       const venteNette = valeur * (1 - p.frais_revente);
       const ira = crd > 0 ? Math.min(0.03 * crd, 6 * crd * rm) : 0;
-      const achat = venteNette - crd - ira - p.pret_familial + potAchat;
+      const achat = venteNette - crd - ira - familial + potAchat;
       out.push({ an: m / 12, achat, loc: potLoc, ecart: achat - potLoc, coutAchat, loyer, crd });
     }
   }
-  return { rows: out, emprunt, mens, assurM, airbnbM, reste, manque, besoin };
+  return { rows: out, emprunt, mens, assurM, airbnbM, reste, manque, besoin, familial };
 }
 
 function pointMort(rows) {
@@ -461,7 +461,8 @@ function render() {
   set("t_e5", rows[4].ecart); set("t_e10", rows[9].ecart);
   document.getElementById("t_mens").textContent = fmt(res.mens + res.assurM) + "/mois";
   document.getElementById("t_emprunt").textContent = "Assurance comprise. Emprunt de " + fmt(res.emprunt) +
-    (res.manque > 0 ? " (dont " + fmt(res.manque) + " de complément)" : ". Il te reste " + fmt(res.reste) + " d'épargne placée");
+    (res.manque > 0 ? " (dont " + fmt(res.manque) + " de complément)" : "") +
+    (res.familial > 0 ? ". Prêt familial utilisé : " + fmt(res.familial) : ". Prêt familial inutile, il te reste " + fmt(res.reste) + " d'épargne");
   document.getElementById("t_airbnb").textContent = fmt(res.airbnbM) + "/mois";
   const nuits = Math.min(p.nuits_mois * 12, p.plafond_nuits);
   document.getElementById("t_airbnb_sub").textContent = nuits + " nuits par an" + (p.nuits_mois * 12 > p.plafond_nuits ? " (plafonné)" : "");
