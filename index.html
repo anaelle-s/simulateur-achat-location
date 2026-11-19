@@ -140,9 +140,11 @@ td:first-child, th:first-child { text-align: left; }
       </fieldset>
 
       <fieldset><legend>Financement</legend>
-        <div class="field"><label for="apport_total">Apport total<small>Prêt familial compris</small></label><div class="num"><input id="apport_total" type="number" step="1000"><span>€</span></div></div>
-        <div class="field"><label for="pret_familial">Dont prêt familial à 0 %<small>Remboursé à la revente</small></label><div class="num"><input id="pret_familial" type="number" step="1000"><span>€</span></div></div>
-        <div class="field"><label for="taux">Taux du crédit</label><div class="num"><input id="taux" type="number" step="0.05"><span>%</span></div></div>
+        <div class="field"><label for="emprunt">Emprunt bancaire<small>Simulation du courtier du 19/11/26</small></label><div class="num"><input id="emprunt" type="number" step="1000"><span>€</span></div></div>
+        <div class="field"><label for="frais_bancaires">Garantie, dossier et courtage<small>2 722 + 1 000 + 3 500 €</small></label><div class="num"><input id="frais_bancaires" type="number" step="100"><span>€</span></div></div>
+        <div class="field"><label for="epargne">Ton épargne<small>Hors prêt familial</small></label><div class="num"><input id="epargne" type="number" step="1000"><span>€</span></div></div>
+        <div class="field"><label for="pret_familial">Prêt familial à 0 %<small>Remboursé à la revente</small></label><div class="num"><input id="pret_familial" type="number" step="1000"><span>€</span></div></div>
+        <div class="field"><label for="taux">Taux du crédit<small>Déduit de la mensualité du courtier : 1 167 € assurance comprise</small></label><div class="num"><input id="taux" type="number" step="0.05"><span>%</span></div></div>
         <div class="field"><label for="assur">Assurance emprunteur</label><div class="num"><input id="assur" type="number" step="0.05"><span>%/an</span></div></div>
         <div class="field"><label for="duree">Durée du crédit</label><div class="num"><input id="duree" type="number" step="1"><span>ans</span></div></div>
       </fieldset>
@@ -320,8 +322,8 @@ td:first-child, th:first-child { text-align: left; }
 
 <script>
 const DEFAULT = {
-  prix: 235000, frais_notaire: 8, materiaux: 20000, apport_total: 110000, pret_familial: 50000,
-  valeur_apres: 275000, mois_travaux: 6, mois_double_loyer: 1, taux: 3.75, assur: 0.25, duree: 25,
+  prix: 235000, frais_notaire: 8.2, materiaux: 20000, emprunt: 207000, frais_bancaires: 7222, epargne: 60000, pret_familial: 50000,
+  valeur_apres: 275000, mois_travaux: 6, mois_double_loyer: 1, taux: 4.27, assur: 0.25, duree: 25,
   loyer: 910, index_loyer: 2, tf: 600, copro: 135, travaux_copro: 4000, entretien: 0.5,
   valo: 1, placement: 3.5, frais_revente: 4,
   nuits_mois: 6, prix_nuit: 110, couts_airbnb: 20, plafond_nuits: 90, tmi: 30
@@ -341,12 +343,16 @@ function simulate(q, years) {
   const pct = ["frais_notaire","taux","assur","index_loyer","entretien","valo","placement","frais_revente","couts_airbnb","tmi"];
   pct.forEach(k => p[k] = q[k] / 100);
   const rm = p.taux / 12, n = p.duree * 12;
-  const coutInitial = p.prix * (1 + p.frais_notaire) + p.materiaux;
-  const emprunt = Math.max(0, coutInitial - p.apport_total);
+  const coutInitial = p.prix * (1 + p.frais_notaire) + p.frais_bancaires + p.materiaux;
+  const cash = p.epargne + p.pret_familial;
+  const besoin = coutInitial - p.emprunt;
+  const manque = Math.max(0, besoin - cash);   // complément emprunté si l'épargne ne suffit pas
+  const reste = Math.max(0, cash - besoin);    // épargne qui reste placée après l'achat
+  const emprunt = Math.max(0, p.emprunt + manque);
   const mens = emprunt > 0 ? (rm > 0 ? emprunt * rm / (1 - Math.pow(1 + rm, -n)) : emprunt / n) : 0;
   const assurM = emprunt * p.assur / 12;
   const placM = Math.pow(1 + p.placement, 1 / 12) - 1;
-  let crd = emprunt, potAchat = 0, potLoc = p.apport_total - p.pret_familial;
+  let crd = emprunt, potAchat = reste, potLoc = p.epargne;
   let airbnbM = 0;
   if (p.nuits_mois > 0) {
     const nuits = Math.min(p.nuits_mois * 12, p.plafond_nuits);
@@ -381,7 +387,7 @@ function simulate(q, years) {
       out.push({ an: m / 12, achat, loc: potLoc, ecart: achat - potLoc, coutAchat, loyer, crd });
     }
   }
-  return { rows: out, emprunt, mens, assurM, airbnbM };
+  return { rows: out, emprunt, mens, assurM, airbnbM, reste, manque, besoin };
 }
 
 function pointMort(rows) {
@@ -454,7 +460,8 @@ function render() {
   const set = (id, v) => { const el = document.getElementById(id); el.textContent = fmtK(v); el.className = "v " + (v >= 0 ? "pos" : "neg"); };
   set("t_e5", rows[4].ecart); set("t_e10", rows[9].ecart);
   document.getElementById("t_mens").textContent = fmt(res.mens + res.assurM) + "/mois";
-  document.getElementById("t_emprunt").textContent = "Emprunt de " + fmt(res.emprunt) + ", assurance comprise";
+  document.getElementById("t_emprunt").textContent = "Assurance comprise. Emprunt de " + fmt(res.emprunt) +
+    (res.manque > 0 ? " (dont " + fmt(res.manque) + " de complément)" : ". Il te reste " + fmt(res.reste) + " d'épargne placée");
   document.getElementById("t_airbnb").textContent = fmt(res.airbnbM) + "/mois";
   const nuits = Math.min(p.nuits_mois * 12, p.plafond_nuits);
   document.getElementById("t_airbnb_sub").textContent = nuits + " nuits par an" + (p.nuits_mois * 12 > p.plafond_nuits ? " (plafonné)" : "");
